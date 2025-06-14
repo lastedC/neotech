@@ -1,0 +1,6 @@
+{
+  "parent": "neotech:block/bismuth_ore",
+  "textures": {
+    "layer0": "neotech:item/bismuth_ore"
+  }
+}
