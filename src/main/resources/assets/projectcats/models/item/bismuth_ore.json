@@ -1,0 +1,6 @@
+{
+  "parent": "projectcats:block/bismuth_ore",
+  "textures": {
+    "layer0": "projectcats:item/bismuth_ore"
+  }
+}

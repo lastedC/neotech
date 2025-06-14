@@ -1,0 +1,6 @@
+{
+  "parent": "projectcats:block/bismuth_block",
+  "textures": {
+    "layer0": "projectcats:item/bismuth_block"
+  }
+}

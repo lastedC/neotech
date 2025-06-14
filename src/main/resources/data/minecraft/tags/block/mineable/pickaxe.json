@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "projectcats:bismuth_block",
+    "projectcats:bismuth_ore",
+    "projectcats:bismuth_deepslate_ore"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "projectcats:block/bismuth_deepslate_ore",
+  "textures": {
+    "layer0": "projectcats:item/bismuth_deepslate_ore"
+  }
+}
