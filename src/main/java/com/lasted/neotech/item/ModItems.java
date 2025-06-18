@@ -18,6 +18,10 @@ public class ModItems {
     public static final DeferredItem<Item> RAW_BISMUTH = ITEMS.register("raw_bismuth",
             () -> new Item(new Item.Properties())
     );
+    public static final DeferredItem<Item> BISMUTH_APPLE = ITEMS.register("bismuth_apple",
+            () -> new Item(new Item.Properties().food(ModFoodProperties.BISMUTH_APPLE)));
+    public static final DeferredItem<Item> BISMUTH_CARROT = ITEMS.register("bismuth_carrot",
+            () -> new Item(new Item.Properties().food(ModFoodProperties.BISMUTH_CARROT)));
 
 
     public static void register(IEventBus eventBus) {

@@ -15,6 +15,8 @@ public class ModItemModelProvider extends ItemModelProvider {
     protected void registerModels() {
         basicItem(ModItems.BISMUTH.get());
         basicItem(ModItems.RAW_BISMUTH.get());
+        basicItem(ModItems.BISMUTH_APPLE.get());
+        basicItem(ModItems.BISMUTH_CARROT.get());
 
 //        basicItem(ModItems.STARLIGHT_ASHES.get());
 //        basicItem(ModItems.CHISEL.get());
