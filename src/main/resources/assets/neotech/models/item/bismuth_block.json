@@ -1,6 +1,0 @@
-{
-  "parent": "neotech:block/bismuth_block",
-  "textures": {
-    "layer0": "neotech:item/bismuth_block"
-  }
-}
