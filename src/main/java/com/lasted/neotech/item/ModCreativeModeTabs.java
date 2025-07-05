@@ -22,6 +22,17 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.BISMUTH);
                         output.accept(ModItems.RAW_BISMUTH);
 
+                        output.accept(ModBlocks.LEAD_ORE);
+                        output.accept(ModItems.RAW_LEAD);
+                        output.accept(ModItems.LEAD_INGOT);
+                        output.accept(ModItems.LEAD_NUGGET);
+                        output.accept(ModBlocks.LEAD_BLOCK);
+                        output.accept(ModItems.LEAD_SWORD);
+                        output.accept(ModItems.LEAD_SHOVEL);
+                        output.accept(ModItems.LEAD_PICKAXE);
+                        output.accept(ModItems.LEAD_AXE);
+                        output.accept(ModItems.LEAD_HOE);
+
                         output.accept(ModItems.BISMUTH_APPLE);
                         output.accept(ModItems.BISMUTH_CARROT);
 

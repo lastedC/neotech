@@ -17,6 +17,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
         blockWithItem(ModBlocks.BISMUTH_BLOCK);
         blockWithItem(ModBlocks.BISMUTH_ORE);
         blockWithItem(ModBlocks.BISMUTH_DEEPSLATE_ORE);
+        blockWithItem(ModBlocks.LEAD_BLOCK);
+        blockWithItem(ModBlocks.LEAD_ORE);
     }
 
     private void blockWithItem(DeferredBlock<?> deferredBlock) {

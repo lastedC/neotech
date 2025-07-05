@@ -21,7 +21,7 @@ public class ModBlocks {
     public static final DeferredBlock<Block> BISMUTH_BLOCK = registerBlock("bismuth_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(3f)
-//                    .requiresCorrectToolForDrops()
+                    .requiresCorrectToolForDrops()
                     .sound(SoundType.AMETHYST)
             )
     );
@@ -38,6 +38,21 @@ public class ModBlocks {
                     .strength(4f)
                     .requiresCorrectToolForDrops()
                     .sound(SoundType.DEEPSLATE)
+            )
+    );
+
+    public static final DeferredBlock<Block> LEAD_BLOCK = registerBlock("lead_block",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .strength(2f)
+                    .requiresCorrectToolForDrops()
+                    .sound(SoundType.METAL)
+            )
+    );
+    public static final DeferredBlock<Block> LEAD_ORE = registerBlock("lead_ore",
+            () -> new DropExperienceBlock(UniformInt.of(3, 6), BlockBehaviour.Properties.of()
+                    .strength(2f)
+                    .requiresCorrectToolForDrops()
+                    .sound(SoundType.STONE)
             )
     );
 

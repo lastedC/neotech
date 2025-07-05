@@ -5,6 +5,18 @@
   "item.neotech.bismuth_apple": "Bismuth Apple",
   "item.neotech.bismuth_carrot": "Bismuth Carrot",
 
+  "block.neotech.lead_ore": "Lead Ore",
+  "block.neotech.lead_block": "Lead Block",
+  "item.neotech.raw_lead": "Raw Lead",
+  "item.neotech.lead_ingot": "Lead Ingot",
+  "item.neotech.lead_nugget": "Lead Nugget",
+
+  "item.neotech.lead_sword": "Lead Sword",
+  "item.neotech.lead_pickaxe": "Lead Pickaxe",
+  "item.neotech.lead_axe": "Lead Axe",
+  "item.neotech.lead_shovel": "Lead Shovel",
+  "item.neotech.lead_hoe": "Lead Hoe",
+
   "block.neotech.bismuth_block": "Block of Bismuth",
   "block.neotech.bismuth_ore": "Bismuth Ore",
   "block.neotech.bismuth_deepslate_ore": "Deepslate Bismuth Ore",
