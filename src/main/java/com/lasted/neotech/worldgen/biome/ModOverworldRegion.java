@@ -22,15 +22,14 @@ public class ModOverworldRegion extends Region {
     @Override
     public void addBiomes(Registry<Biome> registry, Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> mapper) {
         this.addModifiedVanillaOverworldBiomes(mapper, modifiedVanillaOverworldBuilder -> {
-            // Broaden placement: hot, dry, near-inland to inland, and flatter erosion to improve frequency.
             VanillaParameterOverlayBuilder builder = new VanillaParameterOverlayBuilder();
             new ParameterUtils.ParameterPointListBuilder()
                     .temperature(ParameterUtils.Temperature.HOT)
                     .humidity(ParameterUtils.Humidity.DRY)
-                    .continentalness(ParameterUtils.Continentalness.span(ParameterUtils.Continentalness.NEAR_INLAND, ParameterUtils.Continentalness.INLAND))
-                    .erosion(ParameterUtils.Erosion.span(ParameterUtils.Erosion.EROSION_3, ParameterUtils.Erosion.EROSION_5))
+                    .continentalness(ParameterUtils.Continentalness.span(ParameterUtils.Continentalness.COAST, ParameterUtils.Continentalness.FAR_INLAND))
+                    .erosion(ParameterUtils.Erosion.span(ParameterUtils.Erosion.EROSION_1, ParameterUtils.Erosion.EROSION_2))
                     .depth(ParameterUtils.Depth.SURFACE, ParameterUtils.Depth.FLOOR)
-                    .weirdness(ParameterUtils.Weirdness.FULL_RANGE)
+                    .weirdness(ParameterUtils.Weirdness.LOW_SLICE_NORMAL_DESCENDING, ParameterUtils.Weirdness.LOW_SLICE_VARIANT_ASCENDING)
                     .build().forEach(point -> builder.add(point, ModBiomes.DUNE_DESERT));
             builder.build().forEach(mapper);
         });

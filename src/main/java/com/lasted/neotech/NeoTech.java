@@ -62,12 +62,6 @@ public class NeoTech {
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
 
         if(event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
-            event.accept(ModItems.BAUXITE);
-            event.accept(ModItems.CATERIUM_ORE);
-            event.accept(ModItems.LIMESTONE);
-            event.accept(ModItems.SULFUR);
-            event.accept(ModItems.URANIUM);
-
             event.accept(ModItems.BISMUTH);
             event.accept(ModItems.RAW_BISMUTH);
             event.accept(ModItems.RAW_LEAD);
