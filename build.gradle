@@ -19,6 +19,7 @@ group = mod_group_id
 
 repositories {
     mavenLocal()
+    mavenCentral()
     maven {
         name = "Forge"
         url = "https://maven.minecraftforge.net"
