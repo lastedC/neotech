@@ -3,6 +3,8 @@ package com.lasted.neotech;
 import com.lasted.neotech.block.ModBlocks;
 import com.lasted.neotech.item.ModCreativeModeTabs;
 import com.lasted.neotech.item.ModItems;
+import com.lasted.neotech.worldgen.biome.ModTerrablender;
+import com.lasted.neotech.worldgen.biome.surface.ModSurfaceRules;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -20,16 +22,17 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import terrablender.api.SurfaceRuleManager;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(NeoTech.MODID)
 public class NeoTech {
     public static final String MODID = "neotech";
     private static final Logger LOGGER = LogUtils.getLogger();
-    // The constructor for the mod class is the first code that is run when your mod is loaded.
+    // The constructor for the mod class is the first code that runs when your mod is loaded.
     // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
     public NeoTech(IEventBus modEventBus, ModContainer modContainer) {
-        // Register the commonSetup method for modloading
+        // Register the commonSetup method for mod loading
         modEventBus.addListener(this::commonSetup);
 
         // Register ourselves for server and other game events we are interested in.
@@ -42,6 +45,8 @@ public class NeoTech {
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
 
+        ModTerrablender.registerBiomes();
+
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
 
@@ -50,13 +55,19 @@ public class NeoTech {
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
-
+        SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, MODID, ModSurfaceRules.makeRules());
     }
 
     // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
 
         if(event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
+            event.accept(ModItems.BAUXITE);
+            event.accept(ModItems.CATERIUM_ORE);
+            event.accept(ModItems.LIMESTONE);
+            event.accept(ModItems.SULFUR);
+            event.accept(ModItems.URANIUM);
+
             event.accept(ModItems.BISMUTH);
             event.accept(ModItems.RAW_BISMUTH);
             event.accept(ModItems.RAW_LEAD);
