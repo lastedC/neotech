@@ -25,11 +25,11 @@ public class ModOverworldRegion extends Region {
             VanillaParameterOverlayBuilder builder = new VanillaParameterOverlayBuilder();
             new ParameterUtils.ParameterPointListBuilder()
                     .temperature(ParameterUtils.Temperature.HOT)
-                    .humidity(ParameterUtils.Humidity.DRY)
+                    .humidity(ParameterUtils.Humidity.span(ParameterUtils.Humidity.ARID, ParameterUtils.Humidity.NEUTRAL))
                     .continentalness(ParameterUtils.Continentalness.span(ParameterUtils.Continentalness.COAST, ParameterUtils.Continentalness.FAR_INLAND))
-                    .erosion(ParameterUtils.Erosion.span(ParameterUtils.Erosion.EROSION_1, ParameterUtils.Erosion.EROSION_2))
+                    .erosion(ParameterUtils.Erosion.span(ParameterUtils.Erosion.EROSION_5, ParameterUtils.Erosion.EROSION_6))
                     .depth(ParameterUtils.Depth.SURFACE, ParameterUtils.Depth.FLOOR)
-                    .weirdness(ParameterUtils.Weirdness.LOW_SLICE_NORMAL_DESCENDING, ParameterUtils.Weirdness.LOW_SLICE_VARIANT_ASCENDING)
+                    .weirdness(ParameterUtils.Weirdness.FULL_RANGE)
                     .build().forEach(point -> builder.add(point, ModBiomes.DUNE_DESERT));
             builder.build().forEach(mapper);
         });

@@ -1,7 +1,7 @@
 <p align="center"><img src="./.idea/icon.png" alt="Logo" width="517"></p>
 <h1 align="center">NeoTech  <br>
-	<a href="https://github.com/lastedC/neotech/blob/main/LICENSE"><img src="https://img.shields.io/github/license/NeoTech-DevTeam/NeoTech?style=flat&color=900c3f" alt="License"></a>
-	<a href="https://discord.gg/neotech"><img src="https://img.shields.io/discord/000000000000000000?color=5865f2&label=Discord&style=flat" alt="Discord"></a>
+	<a href="https://github.com/lastedC/neotech/blob/main/LICENSE"><img src="https://shields.io/github/license/lastedC/neotech" alt="License"></a>
+	<a href="https://discord.gg/neotech"><img src="https://shields.io/discord/000000000000000000?color=5865f2&label=Discord&style=flat" alt="Discord"></a>
     <br><br>
 </h1>
 
@@ -42,4 +42,4 @@
 <p align="center"><a href="https://github.com/lastedC/neotech/issues"><img src="https://i.imgur.com/qPmjSXy.png" width="160"/></a> <a href="https://discord.gg/neotech"><img src="https://i.imgur.com/uf6V9ZX.png" width="160" /></a></p>
 
 <h1></h1>
-<h4 align="center">Find out more about NeoTech on our <a href="https://www.curseforge.com/minecraft/mc-mods/neotech">Curseforge</a> or <a href="https://modrinth.com/mod/neotech">Modrinth</a> Page</h4>
+<h4 align="center">Find out more about NeoTech on our <a href="https://legacy.curseforge.com/minecraft/mc-mods/neotech-reforged">Curseforge</a> Page</h4>
