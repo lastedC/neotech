@@ -1,6 +1,7 @@
 package com.lasted.neotech;
 
 import com.lasted.neotech.block.ModBlocks;
+import com.lasted.neotech.block.entity.ModBlockEntities;
 import com.lasted.neotech.item.ModCreativeModeTabs;
 import com.lasted.neotech.item.ModItems;
 import com.lasted.neotech.worldgen.biome.ModTerrablender;
@@ -29,6 +30,7 @@ import terrablender.api.SurfaceRuleManager;
 public class NeoTech {
     public static final String MODID = "neotech";
     private static final Logger LOGGER = LogUtils.getLogger();
+
     // The constructor for the mod class is the first code that runs when your mod is loaded.
     // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
     public NeoTech(IEventBus modEventBus, ModContainer modContainer) {
@@ -47,6 +49,8 @@ public class NeoTech {
 
         ModTerrablender.registerBiomes();
 
+        ModBlockEntities.register(modEventBus);
+
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
 
@@ -61,7 +65,7 @@ public class NeoTech {
     // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
 
-        if(event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
+        if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(ModItems.BISMUTH);
             event.accept(ModItems.RAW_BISMUTH);
             event.accept(ModItems.RAW_LEAD);
@@ -69,12 +73,12 @@ public class NeoTech {
             event.accept(ModItems.LEAD_NUGGET);
         }
 
-        if(event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
+        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
             event.accept(ModBlocks.BISMUTH_BLOCK);
             event.accept(ModBlocks.LEAD_BLOCK);
         }
 
-        if(event.getTabKey() == CreativeModeTabs.NATURAL_BLOCKS) {
+        if (event.getTabKey() == CreativeModeTabs.NATURAL_BLOCKS) {
             event.accept(ModBlocks.BISMUTH_ORE);
             event.accept(ModBlocks.LEAD_ORE);
         }
@@ -88,8 +92,7 @@ public class NeoTech {
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    public static class ClientModEvents
-    {
+    public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
 

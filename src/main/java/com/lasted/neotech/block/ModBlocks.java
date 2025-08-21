@@ -1,6 +1,7 @@
 package com.lasted.neotech.block;
 
 import com.lasted.neotech.NeoTech;
+import com.lasted.neotech.block.custom.PortableMiner;
 import com.lasted.neotech.item.ModItems;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.BlockItem;
@@ -17,6 +18,9 @@ import java.util.function.Supplier;
 
 public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(NeoTech.MODID);
+
+    public static final DeferredBlock<Block> PORTABLE_MINER = registerBlock("portable_miner",
+            () -> new PortableMiner(BlockBehaviour.Properties.of().noOcclusion()));
 
     public static final DeferredBlock<Block> BISMUTH_BLOCK = registerBlock("bismuth_block",
             () -> new Block(BlockBehaviour.Properties.of()
