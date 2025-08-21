@@ -4,8 +4,11 @@ import com.lasted.neotech.block.ModBlocks;
 import com.lasted.neotech.block.entity.ModBlockEntities;
 import com.lasted.neotech.item.ModCreativeModeTabs;
 import com.lasted.neotech.item.ModItems;
+import com.lasted.neotech.screen.ModMenuTypes;
+import com.lasted.neotech.screen.custom.PortableMinerScreen;
 import com.lasted.neotech.worldgen.biome.ModTerrablender;
 import com.lasted.neotech.worldgen.biome.surface.ModSurfaceRules;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -50,6 +53,7 @@ public class NeoTech {
         ModTerrablender.registerBiomes();
 
         ModBlockEntities.register(modEventBus);
+        ModMenuTypes.register(modEventBus);
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
@@ -96,6 +100,11 @@ public class NeoTech {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
 
+        }
+
+        @SubscribeEvent
+        public static void registerScreens(RegisterMenuScreensEvent event) {
+            event.register(ModMenuTypes.PORTABLE_MINER_MENU.get(), PortableMinerScreen::new);
         }
     }
 }
