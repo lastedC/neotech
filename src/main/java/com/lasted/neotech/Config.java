@@ -29,6 +29,10 @@ public class Config
             .comment("A list of items to log on common setup.")
             .defineListAllowEmpty("items", List.of("minecraft:iron_ingot"), () -> "", Config::validateItemName);
 
+    public static final ModConfigSpec.IntValue PORTABLE_MINER_INTERVAL_TICKS = BUILDER
+            .comment("Ticks between portable miner outputs (default 300 = ~15 seconds)")
+            .defineInRange("portableMinerIntervalTicks", 300, 1, 72000);
+
     static final ModConfigSpec SPEC = BUILDER.build();
 
     private static boolean validateItemName(final Object obj)

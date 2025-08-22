@@ -67,7 +67,11 @@ public class ModBlocks {
     }
 
     private static <T extends Block> void registerBlockItem(String name, DeferredBlock<T> block) {
-        ModItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+        if ("portable_miner".equals(name)) {
+            ModItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().stacksTo(1)));
+        } else {
+            ModItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+        }
     }
 
     public static void register(IEventBus eventBus) {

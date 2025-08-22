@@ -24,7 +24,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PortableMiner extends BaseEntityBlock {
-    public static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 1.0D, 16.0D);
+    // Edit these constants to change the block's outline (selection) and collision boxes.
+    // Coordinates are in pixels (0-16) within the block space. The model reaches up to ~14 in height and ~3..13 in X/Z.
+    public static final VoxelShape OUTLINE_SHAPE = Block.box(4.0D, 0.0D, 4.0D, 13.0D, 14.0D, 13.0D);
+    public static final VoxelShape COLLISION_SHAPE = OUTLINE_SHAPE;
+
     public static final MapCodec<PortableMiner> CODEC = simpleCodec(PortableMiner::new);
 
     public PortableMiner(Properties properties) {
@@ -33,7 +37,12 @@ public class PortableMiner extends BaseEntityBlock {
 
     @Override
     protected @NotNull VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return SHAPE;
+        return OUTLINE_SHAPE;
+    }
+
+    @Override
+    protected @NotNull VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return COLLISION_SHAPE;
     }
 
     @Override
@@ -52,6 +61,11 @@ public class PortableMiner extends BaseEntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
         return new PortableMinerBlockEntity(blockPos, blockState);
+    }
+
+    @Override
+    public <T extends BlockEntity> net.minecraft.world.level.block.entity.BlockEntityTicker<T> getTicker(Level level, BlockState state, net.minecraft.world.level.block.entity.BlockEntityType<T> type) {
+        return level.isClientSide ? null : createTickerHelper(type, com.lasted.neotech.block.entity.ModBlockEntities.PORTABLE_MINER_BE.get(), PortableMinerBlockEntity::serverTick);
     }
 
     @Override

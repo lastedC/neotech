@@ -2,13 +2,16 @@ package com.lasted.neotech;
 
 import com.lasted.neotech.block.ModBlocks;
 import com.lasted.neotech.block.entity.ModBlockEntities;
+import com.lasted.neotech.compat.PortableMinerRecipeCategory;
 import com.lasted.neotech.item.ModCreativeModeTabs;
 import com.lasted.neotech.item.ModItems;
 import com.lasted.neotech.screen.ModMenuTypes;
 import com.lasted.neotech.screen.custom.PortableMinerScreen;
 import com.lasted.neotech.worldgen.biome.ModTerrablender;
 import com.lasted.neotech.worldgen.biome.surface.ModSurfaceRules;
+import net.minecraft.client.gui.screens.Screen;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.ScreenEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -26,6 +29,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import terrablender.api.SurfaceRuleManager;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
@@ -94,6 +98,12 @@ public class NeoTech {
 
     }
 
+    @SubscribeEvent
+    public void onAddReloadListeners(AddReloadListenerEvent event) {
+        // Load data from data/<namespace>/portable_mining/*.json
+        event.addListener(com.lasted.neotech.recipe.PortableMiningManager.INSTANCE);
+    }
+
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
@@ -105,6 +115,16 @@ public class NeoTech {
         @SubscribeEvent
         public static void registerScreens(RegisterMenuScreensEvent event) {
             event.register(ModMenuTypes.PORTABLE_MINER_MENU.get(), PortableMinerScreen::new);
+        }
+
+    }
+
+    @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
+    public static class ClientForgeEvents {
+        @SubscribeEvent
+        public static void onScreenOpen(ScreenEvent.Opening event) {
+            // Clear cached random input selection when any screen opens
+            PortableMinerRecipeCategory.clearCache();
         }
     }
 }

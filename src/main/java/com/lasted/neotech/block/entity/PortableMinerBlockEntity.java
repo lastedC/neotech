@@ -18,7 +18,14 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class PortableMinerBlockEntity extends BlockEntity implements MenuProvider {
+    private int tickCounter = 0;
     public final ItemStackHandler inventory = new ItemStackHandler(1) {
+        @Override
+        public boolean isItemValid(int slot, ItemStack stack) {
+            // Only allow items that can be produced by the portable miner recipes
+            return com.lasted.neotech.recipe.PortableMiningManager.INSTANCE.isAllowedResult(stack);
+        }
+
         @Override
         protected int getStackLimit(int slot, ItemStack stack) {
             return super.getStackLimit(slot, stack);
@@ -52,12 +59,14 @@ public class PortableMinerBlockEntity extends BlockEntity implements MenuProvide
 
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        tag.putInt("tickCounter", tickCounter);
         super.saveAdditional(tag, registries);
         tag.put("inventory", inventory.serializeNBT(registries));
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        tickCounter = tag.contains("tickCounter") ? tag.getInt("tickCounter") : 0;
         super.loadAdditional(tag, registries);
         inventory.deserializeNBT(registries, tag.getCompound("inventory"));
     }
@@ -65,6 +74,31 @@ public class PortableMinerBlockEntity extends BlockEntity implements MenuProvide
     @Override
     public Component getDisplayName() {
         return Component.literal("Portable Miner");
+    }
+
+    public static void serverTick(net.minecraft.world.level.Level level, BlockPos pos, BlockState state, PortableMinerBlockEntity be) {
+        if (level.isClientSide()) return;
+        be.tickCounter++;
+        int interval = com.lasted.neotech.Config.PORTABLE_MINER_INTERVAL_TICKS.get();
+        if (be.tickCounter >= interval) {
+            be.tickCounter = 0;
+            var belowState = level.getBlockState(pos.below());
+            var entry = com.lasted.neotech.recipe.PortableMiningManager.INSTANCE.findMatch(belowState);
+            if (entry != null) {
+                ItemStack out = entry.result.copy();
+                ItemStack slot = be.inventory.getStackInSlot(0);
+                if (slot.isEmpty()) {
+                    be.inventory.setStackInSlot(0, out);
+                } else if (ItemStack.isSameItemSameComponents(slot, out)) {
+                    int limit = Math.min(slot.getMaxStackSize(), be.inventory.getSlotLimit(0));
+                    int canAdd = Math.min(out.getCount(), limit - slot.getCount());
+                    if (canAdd > 0) {
+                        slot.grow(canAdd);
+                        be.inventory.setStackInSlot(0, slot);
+                    }
+                }
+            }
+        }
     }
 
     @Override

@@ -24,5 +24,6 @@
   "block.neotech.portable_miner": "Portable Miner",
   "creativetab.neotech.neotech_main": "NeoTech",
   "biome.neotech.dune_desert": "Dune Desert",
-  "world_preset.neotech.dune_world": "NeoTech - Dune Desert World"
+  "world_preset.neotech.dune_world": "NeoTech - Dune Desert World",
+  "jei.neotech.portable_mining": "Portable Mining"
 }
