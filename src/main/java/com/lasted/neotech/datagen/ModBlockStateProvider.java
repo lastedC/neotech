@@ -14,6 +14,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
+        // ORES
+        blockWithItem(ModBlocks.BAUXITE_ORE);
+
+        // TUTORIAL STUFF
         blockWithItem(ModBlocks.BISMUTH_BLOCK);
         blockWithItem(ModBlocks.BISMUTH_ORE);
         blockWithItem(ModBlocks.BISMUTH_DEEPSLATE_ORE);

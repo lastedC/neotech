@@ -1,0 +1,15 @@
+{
+  "type": "neotech:mining",
+  "notPortable": false,
+  "ingredients": [
+    {
+      "item": "neotech:bauxite_ore"
+    }
+  ],
+  "result": [
+    {
+      "item": "neotech:bauxite",
+      "count": 1
+    }
+  ]
+}

@@ -16,6 +16,10 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
+        for (String name : ModItems.ITEM_MAP.keySet()) {
+            basicItem(ModItems.ITEM_MAP.get(name).get());
+        }
+
         basicItem(ModItems.BISMUTH.get());
         basicItem(ModItems.RAW_BISMUTH.get());
         basicItem(ModItems.BISMUTH_APPLE.get());

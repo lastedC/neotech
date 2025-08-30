@@ -26,6 +26,14 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
 
     @Override
     protected void generate() {
+        // ORES
+        add(ModBlocks.BAUXITE_ORE.get(),
+                block -> createMultipleOreDrops(ModBlocks.BAUXITE_ORE.get(), ModItems.ITEM_MAP.get("bauxite").get(), 1, 3));
+
+        // MACHINES
+        dropSelf(ModBlocks.PORTABLE_MINER.get());
+
+        // TUTORIAL STUFF
         dropSelf(ModBlocks.BISMUTH_BLOCK.get());
 
         add(ModBlocks.BISMUTH_ORE.get(),

@@ -14,6 +14,30 @@ import java.util.function.Supplier;
 public class ModCreativeModeTabs {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TAB = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, NeoTech.MODID);
 
+    public static final Supplier<CreativeModeTab> NEOTECH_ITEMS_TAB = CREATIVE_MODE_TAB.register("neotech_items",
+            () -> CreativeModeTab.builder()
+                    .icon(() -> new ItemStack(ModItems.ITEM_MAP.get("bauxite").get()))
+                    .title(Component.translatable("creativetab.neotech.neotech_items"))
+                    .displayItems((itemDisplayParameters, output) -> {
+                        output.accept(ModItems.ITEM_MAP.get("bauxite").get());
+                        output.accept(ModBlocks.BAUXITE_ORE.get());
+                        output.accept(ModItems.ITEM_MAP.get("raw_caterium").get());
+                        output.accept(ModItems.ITEM_MAP.get("caterium_ingot").get());
+                        output.accept(ModItems.ITEM_MAP.get("limestone").get());
+                        output.accept(ModItems.ITEM_MAP.get("sulfur").get());
+                        output.accept(ModItems.ITEM_MAP.get("uranium").get());
+                    })
+                    .build());
+
+    public static final Supplier<CreativeModeTab> NEOTECH_MACHINES_TAB = CREATIVE_MODE_TAB.register("neotech_machines",
+            () -> CreativeModeTab.builder()
+                    .icon(() -> new ItemStack(ModBlocks.PORTABLE_MINER.get()))
+                    .title(Component.translatable("creativetab.neotech.neotech_machines"))
+                    .displayItems((itemDisplayParameters, output) -> {
+                        output.accept(ModBlocks.PORTABLE_MINER.get());
+                    })
+                    .build());
+
     public static final Supplier<CreativeModeTab> NEOTECH_MAIN_TAB = CREATIVE_MODE_TAB.register("neotech_main",
             () -> CreativeModeTab.builder()
                     .icon(() -> new ItemStack(ModItems.BISMUTH.get()))

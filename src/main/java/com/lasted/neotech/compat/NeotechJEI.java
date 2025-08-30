@@ -3,12 +3,12 @@ package com.lasted.neotech.compat;
 import com.lasted.neotech.NeoTech;
 import com.lasted.neotech.block.ModBlocks;
 import com.lasted.neotech.recipe.PortableMiningManager;
-import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.api.IModPlugin;
+import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -20,8 +20,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 @JeiPlugin
-public class JEINeoTechPlugin implements IModPlugin {
+public class NeotechJEI implements IModPlugin {
     public static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(NeoTech.MODID, "jei_plugin");
+
+//    public final List<NeotechRecipeCategory<?>> categories = new ArrayList<>();
+//    private IIngredientManager ingredientManager;
+//
+//    public static IJeiRuntime runtime;
+//
+//    private void loadCategories() {
+//        categories.clear();
+//        // load categories here at a later date
+//    }
+//
+//    private <T extends Recipe<? extends RecipeInput>> CategoryBuilder<T> builder(Class<T> recipeClass) {
+//        return new CategoryBuilder<>(recipeClass);
+//    }
+//
+//    private class CategoryBuilder<T extends Recipe<?>> extends NeotechRecipeCategory.Builder<T> {
+//        public CategoryBuilder(Class<? extends T> recipeClass) {
+//            super(recipeClass);
+//        }
+//    }
 
     @Override
     public ResourceLocation getPluginUid() {
@@ -65,7 +85,10 @@ public class JEINeoTechPlugin implements IModPlugin {
                         // de-duplicate
                         boolean exists = false;
                         for (ItemStack existing : inputs) {
-                            if (ItemStack.isSameItemSameComponents(existing, stack)) { exists = true; break; }
+                            if (ItemStack.isSameItemSameComponents(existing, stack)) {
+                                exists = true;
+                                break;
+                            }
                         }
                         if (!exists) inputs.add(stack.copy());
                     }

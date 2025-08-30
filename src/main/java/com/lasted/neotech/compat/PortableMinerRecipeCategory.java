@@ -1,5 +1,20 @@
 package com.lasted.neotech.compat;
 
+//import com.lasted.neotech.compat.jei.category.NeotechRecipeCategory;
+//import mezz.jei.api.gui.drawable.IDrawable;
+//import mezz.jei.api.helpers.IGuiHelper;
+//import mezz.jei.api.recipe.RecipeType;
+//import net.minecraft.network.chat.Component;
+//
+//import java.util.List;
+//import java.util.function.Supplier;
+//
+//public class PortableMinerRecipeCategory extends NeotechRecipeCategory {
+//    public PortableMinerRecipeCategory(RecipeType recipeType, Component title, IDrawable background, IDrawable icon, Supplier recipes, List recipeSuppliers, IGuiHelper guiHelper) {
+//        super(recipeType, title, background, icon, recipes, recipeSuppliers, guiHelper);
+//    }
+//}
+
 import com.lasted.neotech.NeoTech;
 import com.lasted.neotech.block.ModBlocks;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -53,8 +68,8 @@ public class PortableMinerRecipeCategory implements IRecipeCategory<PortableMine
     private static final int ARROW_U = 19, ARROW_V = 13, ARROW_W = 41, ARROW_H = 9;
     private static final int SLOT_U = 0, SLOT_V = 0, SLOT_W = 18, SLOT_H = 18;
 
-    private static final int ING_SLOT_X = 20, ING_SLOT_Y = 12;
-    private static final int RES_SLOT_X = 90, RES_SLOT_Y = 12;
+    private static final int ING_SLOT_X = 10, ING_SLOT_Y = 20; // 20, 12
+    private static final int RES_SLOT_X = 100, RES_SLOT_Y = 20; // 90, 12
 
     public PortableMinerRecipeCategory(IGuiHelper guiHelper) {
         this.background = guiHelper.createBlankDrawable(120, 40);
@@ -88,7 +103,6 @@ public class PortableMinerRecipeCategory implements IRecipeCategory<PortableMine
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, Recipe recipe, IFocusGroup focuses) {
-        // Provide all possible inputs so JEI cycles through them and hover shows the full set
         if (recipe.inputs() != null && !recipe.inputs().isEmpty()) {
             builder.addSlot(RecipeIngredientRole.INPUT, ING_SLOT_X + 1, ING_SLOT_Y + 1)
                     .addIngredients(VanillaTypes.ITEM_STACK, recipe.inputs());
