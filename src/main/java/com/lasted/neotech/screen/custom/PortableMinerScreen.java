@@ -26,5 +26,19 @@ public class PortableMinerScreen extends AbstractContainerScreen<PortableMinerMe
         int y = (height - imageHeight) / 2;
 
         guiGraphics.blit(GUI_TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
+
+        // Draw vertical progress bar to the right of the output slot (80,35)
+        float fraction = this.menu.getProgressFraction();
+        int barX = x + 80 + 18 + 4; // 4px gap to the right of the slot
+        int barY = y + 35;
+        int barW = 4;
+        int barH = 16; // same height as slot
+        // Background of bar
+        guiGraphics.fill(barX, barY, barX + barW, barY + barH, 0xFF333333);
+        // Filled portion grows upwards
+        int filled = Math.max(0, Math.min(barH, (int) Math.floor(fraction * barH)));
+        if (filled > 0) {
+            guiGraphics.fill(barX, barY + (barH - filled), barX + barW, barY + barH, 0xFF4CAF50);
+        }
     }
 }

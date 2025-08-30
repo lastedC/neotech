@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 public class PortableMiner extends BaseEntityBlock {
     // Edit these constants to change the block's outline (selection) and collision boxes.
     // Coordinates are in pixels (0-16) within the block space. The model reaches up to ~14 in height and ~3..13 in X/Z.
-    public static final VoxelShape OUTLINE_SHAPE = Block.box(4.0D, 0.0D, 4.0D, 13.0D, 14.0D, 13.0D);
+    public static final VoxelShape OUTLINE_SHAPE = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 14.0D, 14.0D);
     public static final VoxelShape COLLISION_SHAPE = OUTLINE_SHAPE;
 
     public static final MapCodec<PortableMiner> CODEC = simpleCodec(PortableMiner::new);
@@ -83,7 +83,7 @@ public class PortableMiner extends BaseEntityBlock {
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (level.getBlockEntity(pos) instanceof PortableMinerBlockEntity portableMinerBlockEntity) {
             if (!level.isClientSide()) {
-                ((ServerPlayer) player).openMenu(new SimpleMenuProvider(portableMinerBlockEntity, Component.literal("Portable Miner")), pos);
+                ((ServerPlayer) player).openMenu(new SimpleMenuProvider(portableMinerBlockEntity, Component.translatable("block.neotech.portable_miner")), pos);
                 return ItemInteractionResult.SUCCESS;
             }
         }

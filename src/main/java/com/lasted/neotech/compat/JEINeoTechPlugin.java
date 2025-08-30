@@ -35,26 +35,71 @@ public class JEINeoTechPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
+        // Register whatever we currently have; may be empty on title screen before data packs load.
+        registration.addRecipes(PortableMinerRecipeCategory.TYPE, buildRecipes());
+    }
+
+    private static List<PortableMinerRecipeCategory.Recipe> buildRecipes() {
         List<PortableMinerRecipeCategory.Recipe> recipes = new ArrayList<>();
+
+        // Prefer dynamic, server-synced registries when available (client world joined),
+        // fall back to builtin registry when on title screen.
+        net.minecraft.core.Registry<Block> blockRegistry = null;
+        try {
+            var mc = net.minecraft.client.Minecraft.getInstance();
+            var conn = mc.getConnection();
+            if (conn != null) {
+                blockRegistry = conn.registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.BLOCK);
+            }
+        } catch (Throwable ignored) {
+        }
+
         for (PortableMiningManager.Entry e : PortableMiningManager.INSTANCE.getEntries()) {
+            if (e.notPortable()) continue; // Do not show in portable miner JEI if marked not portable
             List<ItemStack> inputs = new ArrayList<>();
-            // Resolve tag to block items
-            if (e.blockTag != null) {
-                BuiltInRegistries.BLOCK.getTag(e.blockTag).ifPresent(set -> {
-                    for (Holder<Block> holder : set) {
-                        addBlockItem(inputs, holder.value());
+
+            // New format: ingredients (items/tags)
+            if (e.ingredients() != null && !e.ingredients().isEmpty()) {
+                for (net.minecraft.world.item.crafting.Ingredient ing : e.ingredients()) {
+                    for (ItemStack stack : ing.getItems()) {
+                        // de-duplicate
+                        boolean exists = false;
+                        for (ItemStack existing : inputs) {
+                            if (ItemStack.isSameItemSameComponents(existing, stack)) { exists = true; break; }
+                        }
+                        if (!exists) inputs.add(stack.copy());
                     }
-                });
+                }
             }
-            // Resolve explicit block list to block items
-            if (e.blocks != null) {
-                for (Block b : e.blocks) addBlockItem(inputs, b);
+
+            // Legacy: Resolve tag to block items using the best available registry access
+            if (e.blockTag() != null) {
+                if (blockRegistry != null) {
+                    blockRegistry.getTag(e.blockTag()).ifPresent(set -> {
+                        for (Holder<Block> holder : set) {
+                            addBlockItem(inputs, holder.value());
+                        }
+                    });
+                } else {
+                    BuiltInRegistries.BLOCK.getTag(e.blockTag()).ifPresent(set -> {
+                        for (Holder<Block> holder : set) {
+                            addBlockItem(inputs, holder.value());
+                        }
+                    });
+                }
             }
-            if (!inputs.isEmpty() && !e.result.isEmpty()) {
-                recipes.add(new PortableMinerRecipeCategory.Recipe(inputs, e.result.copy()));
+            // Legacy: explicit block list to block items
+            if (e.blocks() != null) {
+                for (Block b : e.blocks()) addBlockItem(inputs, b);
+            }
+
+            // Results: choose the first as primary output for display
+            ItemStack out = e.result();
+            if (out != null && !out.isEmpty() && !inputs.isEmpty()) {
+                recipes.add(new PortableMinerRecipeCategory.Recipe(inputs, out.copy()));
             }
         }
-        registration.addRecipes(PortableMinerRecipeCategory.TYPE, recipes);
+        return recipes;
     }
 
     private static void addBlockItem(List<ItemStack> list, Block b) {
@@ -76,6 +121,6 @@ public class JEINeoTechPlugin implements IModPlugin {
 
     @Override
     public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
-        // no-op
+        // Keep initial registration only to avoid duplicate entries; no runtime mutation here.
     }
 }

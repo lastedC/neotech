@@ -71,6 +71,14 @@ public class PortableMinerBlockEntity extends BlockEntity implements MenuProvide
         inventory.deserializeNBT(registries, tag.getCompound("inventory"));
     }
 
+    public int getTickCounter() {
+        return tickCounter;
+    }
+
+    public int getIntervalTicks() {
+        return com.lasted.neotech.Config.PORTABLE_MINER_INTERVAL_TICKS.get();
+    }
+
     @Override
     public Component getDisplayName() {
         return Component.literal("Portable Miner");
@@ -78,24 +86,36 @@ public class PortableMinerBlockEntity extends BlockEntity implements MenuProvide
 
     public static void serverTick(net.minecraft.world.level.Level level, BlockPos pos, BlockState state, PortableMinerBlockEntity be) {
         if (level.isClientSide()) return;
+
+        // Check the block below first to determine if mining is valid
+        var belowState = level.getBlockState(pos.below());
+        var entry = com.lasted.neotech.recipe.PortableMiningManager.INSTANCE.findMatch(belowState);
+
+        if (entry == null) {
+            // No valid block: reset/hold progress so the UI bar does not fill
+            if (be.tickCounter != 0) {
+                be.tickCounter = 0;
+                // notify clients so the bar clears promptly
+                level.sendBlockUpdated(pos, state, state, 3);
+            }
+            return;
+        }
+
+        // Valid target present, advance progress
         be.tickCounter++;
         int interval = com.lasted.neotech.Config.PORTABLE_MINER_INTERVAL_TICKS.get();
         if (be.tickCounter >= interval) {
             be.tickCounter = 0;
-            var belowState = level.getBlockState(pos.below());
-            var entry = com.lasted.neotech.recipe.PortableMiningManager.INSTANCE.findMatch(belowState);
-            if (entry != null) {
-                ItemStack out = entry.result.copy();
-                ItemStack slot = be.inventory.getStackInSlot(0);
-                if (slot.isEmpty()) {
-                    be.inventory.setStackInSlot(0, out);
-                } else if (ItemStack.isSameItemSameComponents(slot, out)) {
-                    int limit = Math.min(slot.getMaxStackSize(), be.inventory.getSlotLimit(0));
-                    int canAdd = Math.min(out.getCount(), limit - slot.getCount());
-                    if (canAdd > 0) {
-                        slot.grow(canAdd);
-                        be.inventory.setStackInSlot(0, slot);
-                    }
+            ItemStack out = entry.result().copy();
+            ItemStack slot = be.inventory.getStackInSlot(0);
+            if (slot.isEmpty()) {
+                be.inventory.setStackInSlot(0, out);
+            } else if (ItemStack.isSameItemSameComponents(slot, out)) {
+                int limit = Math.min(slot.getMaxStackSize(), be.inventory.getSlotLimit(0));
+                int canAdd = Math.min(out.getCount(), limit - slot.getCount());
+                if (canAdd > 0) {
+                    slot.grow(canAdd);
+                    be.inventory.setStackInSlot(0, slot);
                 }
             }
         }

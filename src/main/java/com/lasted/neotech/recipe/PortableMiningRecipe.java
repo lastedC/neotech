@@ -1,8 +1,11 @@
 package com.lasted.neotech.recipe;
 
+import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -30,7 +33,11 @@ public class PortableMiningRecipe {
         return false;
     }
 
-    public ItemStack getResultItemCopy() { return result.copy(); }
+    public ItemStack getResultItemCopy() {
+        return result.copy();
+    }
 
-    public ResourceLocation getId() { return id; }
+    public ResourceLocation getId() {
+        return id;
+    }
 }

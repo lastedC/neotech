@@ -30,8 +30,8 @@ public class Config
             .defineListAllowEmpty("items", List.of("minecraft:iron_ingot"), () -> "", Config::validateItemName);
 
     public static final ModConfigSpec.IntValue PORTABLE_MINER_INTERVAL_TICKS = BUILDER
-            .comment("Ticks between portable miner outputs (default 300 = ~15 seconds)")
-            .defineInRange("portableMinerIntervalTicks", 300, 1, 72000);
+            .comment("Ticks between portable miner outputs (default 60 = 3 seconds -> 20 items/minute)")
+            .defineInRange("portableMinerIntervalTicks", 60, 1, 72000);
 
     static final ModConfigSpec SPEC = BUILDER.build();
 

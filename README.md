@@ -12,18 +12,28 @@
 
 <h2>🚀 Released Features</h2>
 <ul>
-    
+
+</ul>
+
+<h2>⚙️ Configuration</h2>
+<p>You can change how often the Portable Miner outputs items via the mod's config file.</p>
+<ul>
+  <li>Config key: <code>portableMinerIntervalTicks</code></li>
+  <li>Location (dev): <code>run/config/neotech-common.toml</code></li>
+  <li>Location (installed): <code>config/neotech-common.toml</code></li>
+  <li>Meaning: ticks between each output (20 ticks = 1 second)</li>
+  <li>For 20 ore per minute: set to <code>60</code> (1 item every 3 seconds)</li>
 </ul>
 
 <h2>🔧 Work-In-Progress Features</h2>
 <ul>
+    <li><b>Drills & Extractors</b> – Automate resource gathering with powered drills.</li>
     <li><b>Biome Generation</b> – Discover and explore four brand-new biomes with exciting structures.</li>
     <li><b>Ore Deposit System</b> – Discover and claim naturally generating resource nodes.</li>
 </ul>
 
 <h2>🛠 Planned Features</h2>
 <ul>
-    <li><b>Drills & Extractors</b> – Automate resource gathering with powered drills.</li>
     <li><b>Conveyor Belts</b> – Physically transport items between machines and storage.</li>
     <li><b>Basic Fabricators</b> – Turn raw resources into useful materials.</li>
     <li><b>Power Management</b> – Generators and cables to keep your machines running.</li>

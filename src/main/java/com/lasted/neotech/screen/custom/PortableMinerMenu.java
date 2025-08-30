@@ -9,6 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -18,6 +19,8 @@ import org.jetbrains.annotations.NotNull;
 public class PortableMinerMenu extends AbstractContainerMenu {
     public final PortableMinerBlockEntity blockEntity;
     private final Level level;
+    private int clientTickCounter;
+    private int clientIntervalTicks;
 
     public PortableMinerMenu(int containerId, Inventory inventory, FriendlyByteBuf buffer) {
         this(containerId, inventory, inventory.player.level().getBlockEntity(buffer.readBlockPos()));
@@ -32,6 +35,30 @@ public class PortableMinerMenu extends AbstractContainerMenu {
         addPlayerHotbar(inventory);
 
         this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 0, 80, 35));
+
+        // Sync tick counter and interval to client via DataSlots
+        this.addDataSlot(new DataSlot() {
+            @Override
+            public int get() {
+                return PortableMinerMenu.this.blockEntity.getTickCounter();
+            }
+
+            @Override
+            public void set(int value) {
+                clientTickCounter = value;
+            }
+        });
+        this.addDataSlot(new DataSlot() {
+            @Override
+            public int get() {
+                return PortableMinerMenu.this.blockEntity.getIntervalTicks();
+            }
+
+            @Override
+            public void set(int value) {
+                clientIntervalTicks = value;
+            }
+        });
     }
 
     // CREDIT GOES TO: diesieben07 | https://github.com/diesieben07/SevenCommons
@@ -96,6 +123,12 @@ public class PortableMinerMenu extends AbstractContainerMenu {
                 this.addSlot(new Slot(inventory, l + i * 9 + 9, 8 + l * 18, 84 + i * 18));
             }
         }
+    }
+
+    public float getProgressFraction() {
+        int interval = Math.max(1, clientIntervalTicks);
+        int ticks = Math.max(0, Math.min(clientTickCounter, interval));
+        return (float) ticks / (float) interval;
     }
 
     private void addPlayerHotbar(Inventory inventory) {

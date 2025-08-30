@@ -48,16 +48,20 @@ public class PortableMinerRecipeCategory implements IRecipeCategory<PortableMine
     // Widgets texture (shadow + arrow) provided by the mod at assets/neotech/textures/gui/jei/widgets.png
     private static final ResourceLocation WIDGETS_TEX = ResourceLocation.fromNamespaceAndPath(NeoTech.MODID, "textures/gui/jei/widgets.png");
     // NOTE: If the cutout positions in your widgets.png change, adjust these UV/size constants.
-    private static final int SHADOW_U = 0, SHADOW_V = 0, SHADOW_W = 32, SHADOW_H = 16;
-    // Arrow sprite is 41x9, positioned 19px from the right edge and 13px from the top on a 64px-wide texture
-    private static final int ARROW_U = 0, ARROW_V = 19, ARROW_W = 41, ARROW_H = 9;
+    private static final int SHADOW_U = 3, SHADOW_V = 19, SHADOW_W = 32, SHADOW_H = 16;
+
+    private static final int ARROW_U = 19, ARROW_V = 13, ARROW_W = 41, ARROW_H = 9;
+    private static final int SLOT_U = 0, SLOT_V = 0, SLOT_W = 18, SLOT_H = 18;
+
+    private static final int ING_SLOT_X = 20, ING_SLOT_Y = 12;
+    private static final int RES_SLOT_X = 90, RES_SLOT_Y = 12;
 
     public PortableMinerRecipeCategory(IGuiHelper guiHelper) {
         this.background = guiHelper.createBlankDrawable(120, 40);
         this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.PORTABLE_MINER.get()));
-        this.slotDrawable = guiHelper.getSlotDrawable();
+        this.slotDrawable = guiHelper.createDrawable(WIDGETS_TEX, SLOT_U, SLOT_V, SLOT_W, SLOT_H);
         this.shadowDrawable = guiHelper.createDrawable(WIDGETS_TEX, SHADOW_U, SHADOW_V, SHADOW_W, SHADOW_H);
-        this.arrowDrawable = guiHelper.createDrawable(WIDGETS_TEX, ARROW_U, ARROW_V, ARROW_W, ARROW_H);
+        this.arrowDrawable = guiHelper.createDrawable(WIDGETS_TEX, 19, 7, ARROW_W, ARROW_H);
     }
 
     @Override
@@ -84,23 +88,24 @@ public class PortableMinerRecipeCategory implements IRecipeCategory<PortableMine
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, Recipe recipe, IFocusGroup focuses) {
-        // We don't show a visible input slot, but we still register inputs invisibly so JEI "Uses" can find this recipe.
-        builder.addInvisibleIngredients(RecipeIngredientRole.INPUT)
-                .addItemStacks(recipe.inputs());
-        // Output stays a normal item on the right
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 90, 12)
-                .addItemStack(recipe.output());
+        // Provide all possible inputs so JEI cycles through them and hover shows the full set
+        if (recipe.inputs() != null && !recipe.inputs().isEmpty()) {
+            builder.addSlot(RecipeIngredientRole.INPUT, ING_SLOT_X + 1, ING_SLOT_Y + 1)
+                    .addIngredients(VanillaTypes.ITEM_STACK, recipe.inputs());
+        }
+        if (recipe.output() != null && !recipe.output().isEmpty()) {
+            builder.addSlot(RecipeIngredientRole.OUTPUT, RES_SLOT_X + 1, RES_SLOT_Y + 1)
+                    .addItemStack(recipe.output());
+        }
     }
 
     @Override
     public void draw(Recipe recipe, IRecipeSlotsView recipeSlotsView, net.minecraft.client.gui.GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        // Draw only the right slot background; the left side is reserved for 3D render
-        slotDrawable.draw(guiGraphics, 90, 12);
+        slotDrawable.draw(guiGraphics, ING_SLOT_X, ING_SLOT_Y);
+        slotDrawable.draw(guiGraphics, RES_SLOT_X, RES_SLOT_Y);
 
-        // Draw textured arrow from widgets.png instead of code-drawn lines
-        // Position the arrow roughly centered horizontally between the 3D area (left) and the output slot (right)
-        int arrowX = (background.getWidth() - ARROW_W) / 2;
-        int arrowY = (background.getHeight() - ARROW_H) / 2;
+        int arrowX = (background.getWidth() - 32) / 2;
+        int arrowY = (background.getHeight()) / 2;
         arrowDrawable.draw(guiGraphics, arrowX, arrowY);
 
         // Pick a random input for this recipe (once per JEI session) and render it in 3D with the miner above it
@@ -125,9 +130,9 @@ public class PortableMinerRecipeCategory implements IRecipeCategory<PortableMine
                     pose.pushPose();
                     // Draw a soft shadow under the input block using widgets.png
                     // Place the shadow so it visually sits beneath the rendered base block
-                    int shadowX = 20; // tune if needed to align with the 3D render
-                    int shadowY = 22;
-                    shadowDrawable.draw(guiGraphics, shadowX, shadowY);
+//                    int shadowX = 20; // tune if needed to align with the 3D render
+//                    int shadowY = 22;
+//                    shadowDrawable.draw(guiGraphics, shadowX, shadowY);
 
                     // Position the scene around x ~ 28px, y ~ 34px within the 120x40 area
                     pose.translate(28.0f, 34.0f, 100.0f);
@@ -143,10 +148,10 @@ public class PortableMinerRecipeCategory implements IRecipeCategory<PortableMine
 
                     try {
                         // Render base/input block at y=0
-                        dispatcher.renderSingleBlock(baseState, pose, buffer, light, overlay);
+//                        dispatcher.renderSingleBlock(baseState, pose, buffer, light, overlay);
                         // Render the portable miner above it at y=1
                         pose.translate(0.0f, 1.0f, 0.0f);
-                        dispatcher.renderSingleBlock(minerState, pose, buffer, light, overlay);
+//                        dispatcher.renderSingleBlock(minerState, pose, buffer, light, overlay);
                     } catch (Throwable ignored) {
                         // Avoid crashing JEI if something goes wrong with rendering
                     }

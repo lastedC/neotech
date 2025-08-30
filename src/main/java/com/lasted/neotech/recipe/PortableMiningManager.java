@@ -3,6 +3,7 @@ package com.lasted.neotech.recipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.minecraft.FieldsAreNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.Resource;
@@ -24,16 +25,23 @@ public class PortableMiningManager implements PreparableReloadListener {
     public static final PortableMiningManager INSTANCE = new PortableMiningManager();
     private static final String FOLDER = "portable_mining"; // data/<namespace>/portable_mining/*.json
 
-    public static class Entry {
-        public final TagKey<Block> blockTag; // nullable
-        public final Set<Block> blocks;      // may be empty
-        public final ItemStack result;
-        public Entry(TagKey<Block> blockTag, Set<Block> blocks, ItemStack result) {
-            this.blockTag = blockTag;
-            this.blocks = blocks;
-            this.result = result;
-        }
+    /**
+     * @param blockTag nullable
+     * @param blocks   may be empty
+     */
+    public record Entry(boolean notPortable, List<net.minecraft.world.item.crafting.Ingredient> ingredients, List<ItemStack> results, TagKey<Block> blockTag, Set<Block> blocks, ItemStack result) {
         public boolean matches(BlockState state) {
+            // New format: ingredients list (items/tags). We match by comparing the block's item form.
+            if (ingredients != null && !ingredients.isEmpty()) {
+                Item blockItem = state.getBlock().asItem();
+                if (blockItem != null && blockItem != net.minecraft.world.item.Items.AIR) {
+                    ItemStack probe = new ItemStack(blockItem);
+                    for (net.minecraft.world.item.crafting.Ingredient ing : ingredients) {
+                        if (ing.test(probe)) return true;
+                    }
+                }
+            }
+            // Legacy format: tag/blocks
             if (blockTag != null && state.is(blockTag)) return true;
             if (blocks != null && !blocks.isEmpty()) {
                 for (Block b : blocks) if (state.is(b)) return true;
@@ -45,7 +53,8 @@ public class PortableMiningManager implements PreparableReloadListener {
     private final List<Entry> entries = new ArrayList<>();
     private final Set<Item> allowedResultItems = new HashSet<>();
 
-    private PortableMiningManager() {}
+    private PortableMiningManager() {
+    }
 
     @Override
     public CompletableFuture<Void> reload(PreparationBarrier barrier, ResourceManager resourceManager,
@@ -79,9 +88,42 @@ public class PortableMiningManager implements PreparableReloadListener {
             for (Map.Entry<ResourceLocation, JsonObject> e : map.entrySet()) {
                 try {
                     JsonObject json = e.getValue();
-                    // parse result
-                    ItemStack result = ioResult(json);
-                    // parse inputs
+                    boolean notPortable = json.has("notPortable") && json.get("notPortable").getAsBoolean();
+                    // parse results (array) with fallback to single
+                    List<ItemStack> results = new ArrayList<>();
+                    if (json.has("result") && json.get("result").isJsonArray()) {
+                        JsonArray arr = json.getAsJsonArray("result");
+                        for (int i = 0; i < arr.size(); i++) {
+                            JsonObject r = arr.get(i).getAsJsonObject();
+                            ResourceLocation itemId = ResourceLocation.parse(r.get("item").getAsString());
+                            int count = r.has("count") ? r.get("count").getAsInt() : 1;
+                            results.add(new ItemStack(Objects.requireNonNull(BuiltInRegistries.ITEM.get(itemId)), count));
+                        }
+                    } else {
+                        ItemStack single = ioResult(json);
+                        if (!single.isEmpty()) results.add(single);
+                    }
+
+                    // parse ingredients (array), supports {item} or {tag}
+                    List<net.minecraft.world.item.crafting.Ingredient> ingredients = new ArrayList<>();
+                    if (json.has("ingredients")) {
+                        JsonArray arr = json.getAsJsonArray("ingredients");
+                        for (int i = 0; i < arr.size(); i++) {
+                            JsonObject ing = arr.get(i).getAsJsonObject();
+                            if (ing.has("item")) {
+                                ResourceLocation id = ResourceLocation.parse(ing.get("item").getAsString());
+                                Item item = BuiltInRegistries.ITEM.get(id);
+                                if (item == null) throw new IllegalArgumentException("Unknown item: " + id);
+                                ingredients.add(net.minecraft.world.item.crafting.Ingredient.of(new ItemStack(item)));
+                            } else if (ing.has("tag")) {
+                                ResourceLocation tagId = ResourceLocation.parse(ing.get("tag").getAsString());
+                                TagKey<Item> itemTag = TagKey.create(BuiltInRegistries.ITEM.key(), tagId);
+                                ingredients.add(net.minecraft.world.item.crafting.Ingredient.of(itemTag));
+                            }
+                        }
+                    }
+
+                    // legacy support
                     TagKey<Block> tag = null;
                     Set<Block> blocks = new HashSet<>();
                     if (json.has("block_tag")) {
@@ -97,11 +139,13 @@ public class PortableMiningManager implements PreparableReloadListener {
                             blocks.add(b);
                         }
                     }
-                    if (tag == null && blocks.isEmpty()) {
-                        throw new IllegalArgumentException("portable_mining entry must define 'block_tag' or non-empty 'blocks'");
+                    if (ingredients.isEmpty() && tag == null && blocks.isEmpty()) {
+                        throw new IllegalArgumentException("portable_mining entry must define 'ingredients' or legacy 'block_tag'/'blocks'");
                     }
-                    entries.add(new Entry(tag, blocks, result));
-                    if (!result.isEmpty()) allowedResultItems.add(result.getItem());
+                    // choose primary result for legacy APIs
+                    ItemStack result = results.isEmpty() ? ItemStack.EMPTY : results.get(0);
+                    entries.add(new Entry(notPortable, ingredients, results, tag, blocks, result));
+                    for (ItemStack it : results) if (!it.isEmpty()) allowedResultItems.add(it.getItem());
                 } catch (Exception ex) {
                     // Skip invalid entries
                 }
@@ -126,7 +170,7 @@ public class PortableMiningManager implements PreparableReloadListener {
     }
 
     public synchronized Entry findMatch(BlockState state) {
-        for (Entry e : entries) if (e.matches(state)) return e;
+        for (Entry e : entries) if (!e.notPortable() && e.matches(state)) return e;
         return null;
     }
 
